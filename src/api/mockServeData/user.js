@@ -40,6 +40,7 @@ export default {
    * @return {{code: number, count: number, data: *[]}}
    */
   getUserList: config => {
+    console.log(config, 'config')
     const { name, page = 1, limit = 20 } = param2Obj(config.url)
     console.log('name:' + name, 'page:' + page, '分页大小limit:' + limit)
     const mockList = List.filter(user => {
@@ -82,7 +83,7 @@ export default {
    * @return {*}
    */
   deleteUser: config => {
-    const { id } = param2Obj(config.url)
+    const { id } = JSON.parse(config.body)
     if (!id) {
       return {
         code: -999,

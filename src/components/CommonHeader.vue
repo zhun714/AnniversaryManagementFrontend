@@ -4,7 +4,7 @@
         <el-button @click="handleMenu" plain icon="el-icon-menu" size="mini"></el-button>
         <!-- <span style="color:#fff">首页</span> -->
         <el-breadcrumb separator="/">
-        <el-breadcrumb-item v-for="item in tags"  :key="item.path" :to="{path:item.path}">{{item.label}}</el-breadcrumb-item>
+          <el-breadcrumb-item v-for="item in tags"  :key="item.path" :to="{path:item.path}">{{item.label}}</el-breadcrumb-item>
         </el-breadcrumb>
     </div>
        
@@ -44,7 +44,7 @@ export default {
   },
   computed:{
     ...mapState({
-      tags:state=>state.tab.tabList
+      tags:state=>state.tab.tabsList
     })
   }
 }
@@ -65,6 +65,19 @@ header
     .el-button
     {
         margin-right: 10px;
+    }
+    /deep/.el-breadcrumb__item{
+      .el-breadcrumb__inner{
+        font-weight: normal;
+        &.is-link{
+          color:#666
+        }
+      }
+      &:last-child{
+        .el-breadcrumb__inner{
+          color:white
+        }
+      }
     }
 }
 .r-content

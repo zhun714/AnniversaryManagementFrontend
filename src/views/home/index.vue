@@ -51,7 +51,7 @@
   </el-row>
 </template>
 <script>
-import {getData} from '../../api/data.js'
+import {getData} from '../../api'
 import * as echarts from 'echarts'
 export default {
   name: 'Home',

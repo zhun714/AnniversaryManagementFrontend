@@ -1,11 +1,11 @@
 <template>
   <div class="about">
-    <h1>mall页面</h1>
+    <h1>背景页面</h1>
   </div>
 </template>
 <script>
 export default {
-  name: 'mall',
+  name: 'bkground',
   data () {
     return {}
   }

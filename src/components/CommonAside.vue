@@ -1,7 +1,7 @@
 
 <template>
     <el-menu default-active="1-4-1" class="el-menu-vertical-demo" background-color="#545c64" text-color="white" active-text-color="#ffd04b" :collapse="isCollapse">
-      <h3>{{isCollapse?'后台':'通用后台管理系统'}}</h3>
+      <h3>{{isCollapse?'后台':'校庆后台管理系统'}}</h3>
    <el-menu-item @click="clickmenu(item)" v-for="item in nochildren" :index="item.path" :key="item.path">
     <i :class="'el-icon-'+item.icon"></i>
     <span slot="title">{{item.label}}</span>
@@ -24,6 +24,7 @@
   }
   .el-menu{
     height: 100%;
+    background: rgba(32, 39, 65, 1);
     border: none;
     h3{
       text-align: center;

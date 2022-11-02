@@ -8,7 +8,8 @@ export default {
                 path:'/',
                 name:'home',
                 label:'首页',
-                icon:'home'
+                icon: 's-home',
+                url:'home/index'
             }
         ],
         currentMenu:null,
@@ -18,7 +19,8 @@ export default {
         CollapseMenu(state){
             state.isCollapse=!state.isCollapse
         },
-        selectMenu(state,val){
+        selectMenu(state, val) {
+            console.log(state.tabsList)
             if(val.name!=='home'){
                 state.currentMenu=val
                 const result =  state.tabsList.findIndex(item => item.name === val.name)

@@ -11,36 +11,46 @@ const routes = [
     component: Main,
     redirect:'/home',
     children: [
-    //   {
-    //   path: '/home',
-    //   name: 'home',
-    //   component: () => import('../views/home')
-    // },
-    // {
-    //   path: '/user',
-    //   name: 'user',
-    //   component: () => import('../views/user')
-    //   },
-    //   {
-    //     path: '/mall',
-    //     name: 'mall',
-    //     component: () => import('../views/mall')
-    //   },
-    //   {
-    //     path: '/user',
-    //     name: 'user',
-    //     component: () => import('../views/user')
-    //   },
-    //   {
-    //     path: '/page1',
-    //     name: 'page1',
-    //     component: () => import('../views/other/pageone.vue')
-    //   },
-    //   {
-    //     path: '/page2',
-    //     name: 'page2',
-    //     component: () => import('../views/other/pagetwo.vue')
-    //     }
+      {
+      path: '/home',
+      name: 'home',
+      component: () => import('../views/home')
+    },
+    {
+      path: '/user',
+      name: 'user',
+      component: () => import('../views/user')
+      },
+      {
+        path: '/huodong',
+        name: 'huodong',
+        component: () => import('../views/huodong')
+      },
+      {
+        path: '/user',
+        name: 'user',
+        component: () => import('../views/user')
+      },
+      {
+        path: '/xueyuan',
+        name: 'page1',
+        component: () => import('../views/xueyuanguanli/xueyuan.vue')
+      },
+      {
+        path: '/xiaoyou',
+        name: 'page2',
+        component: () => import('../views/xueyuanguanli/xueyuan.vue')
+      },
+      {
+          path: '/zhufu',
+          name: 'zhufu',
+          component: () => import('../views/zhufu/index.vue')
+      },
+      {
+          path: '/bkground',
+          name: 'bkground',
+          component: () => import('../views/bkground/index.vue')
+      }
     ]
   },
   {
