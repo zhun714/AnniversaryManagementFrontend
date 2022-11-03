@@ -39,7 +39,7 @@ const routes = [
       {
         path: '/xiaoyou',
         name: 'page2',
-        component: () => import('../views/xueyuanguanli/xueyuan.vue')
+        component: () => import('../views/xueyuanguanli/xiaoyou.vue')
       },
       {
           path: '/zhufu',

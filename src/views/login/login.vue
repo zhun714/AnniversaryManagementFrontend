@@ -90,7 +90,7 @@ export default {
     opacity: 0.92;
     border-radius: 15px;
     background-clip: padding-box;
-    margin: 180px auto;
+    margin: 220px auto;
     width: 400px;
     background: #fff;
     border: 1px solid #eaeaea;

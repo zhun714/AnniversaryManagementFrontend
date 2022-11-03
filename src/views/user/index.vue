@@ -1,17 +1,23 @@
 <template>
     <div class="manage">
         <el-dialog
-            title="提示"
+            :title=" modalType == 0 ? '新增用户' :'编辑用户'"
             :visible.sync="dialogVisible"
             width="50%"
             :before-close="handleClose">
             <!-- 用户的表单信息 -->
             <el-form ref="form" :rules="rules" :inline="true" :model="form" label-width="80px">
+                <el-form-item label="学号" prop="num">
+                    <el-input placeholder="请输入学号" v-model="form.num"></el-input>
+                </el-form-item>
                 <el-form-item label="姓名" prop="name">
                     <el-input placeholder="请输入姓名" v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="年龄" prop="age">
-                    <el-input placeholder="请输入年龄" v-model="form.age"></el-input>
+                <el-form-item label="电话号码" prop="phone">
+                    <el-input placeholder="请输入电话" v-model="form.phone"></el-input>
+                </el-form-item>
+                <el-form-item label="宿舍号" prop="sushe">
+                    <el-input placeholder="请输入宿舍号" v-model="form.sushe"></el-input>
                 </el-form-item>
                 <el-form-item label="性别" prop="sex">
                     <el-select v-model="form.sex" placeholder="请选择">
@@ -19,16 +25,16 @@
                         <el-option label="女" :value="0"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="出生日期" prop="birth">
+                <el-form-item label="毕业日期" prop="graduate">
                     <el-date-picker
-                        v-model="form.birth"
+                        v-model="form.graduate"
                         type="date"
                         placeholder="选择日期"
                         value-format="yyyy-MM-DD">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="地址" prop="addr">
-                    <el-input placeholder="请输入地址" v-model="form.addr"></el-input>
+                <el-form-item label="微信号" prop="wx">
+                    <el-input placeholder="请输入wx号" v-model="form.wx"></el-input>
                 </el-form-item>
             </el-form>
 
@@ -58,8 +64,20 @@
                 :data="tableData"
                 style="width: 100%">
                 <el-table-column
+                    prop="num"
+                    label="学号">
+                </el-table-column>
+                <el-table-column
                     prop="name"
                     label="姓名">
+                </el-table-column>
+                <el-table-column
+                    prop="phone"
+                    label="手机号">
+                </el-table-column>
+                <el-table-column
+                    prop="sushe"
+                    label="宿舍号">
                 </el-table-column>
                 <el-table-column
                     prop="sex"
@@ -69,20 +87,16 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                    prop="age"
-                    label="年龄">
+                    prop="graduate"
+                    label="毕业日期">
                 </el-table-column>
                 <el-table-column
-                    prop="birth"
-                    label="出生日期">
+                    prop="wx"
+                    label="wx号">
                 </el-table-column>
                 <el-table-column
-                    prop="addr"
-                    label="地址">
-                </el-table-column>
-                <el-table-column
-                    prop="addr"
-                    label="地址">
+                    prop="wx"
+                    label="操作">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
                         <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
@@ -100,36 +114,93 @@
     </div>
 </template>
 <script>
-import { getUser, addUser, editUser, delUser } from '@/api'
+// import { getUser, addUser, editUser, delUser } from '@/api'
 export default {
     data() {
         return {
             dialogVisible: false,
             form: {
+                num: '',
                 name: '',
-                age: '',
+                phone: '',
+                sushe: '',
                 sex: '',
-                birth: '',
-                addr: ''
+                graduate: '',
+                wx:''
             },
-            rules: {
-                name: [
-                    { required: true, message: '请输入姓名' }
-                ],
-                age: [
-                    { required: true, message: '请输入年龄' }
-                ],
-                sex: [
-                    { required: true, message: '请选择性别' }
-                ],
-                birth: [
-                    { required: true, message: '请选择出生日期' }
-                ],
-                addr: [
-                    { required: true, message: '请输入地址' }
-                ]
+            user:{
+              name:'',
             },
-            tableData: [],
+            // rules: {
+            //     name: [
+            //         { required: true, message: '请输入姓名' }
+            //     ],
+            //     num: [
+            //         { required: true, message: '请输入学号' }
+            //     ],
+            //     sex: [
+            //         { required: true, message: '请选择性别' }
+            //     ],
+            //     graduate: [
+            //         { required: true, message: '请选择毕业日期' }
+            //     ],
+            //     phone: [
+            //         { required: true, message: '请输入电话' }
+            //     ],
+            //     sushe:[
+            //         { required: true, message: '请输入宿舍号' }
+            //     ],
+            //     wx:[
+            //        { required: true, message: '请输入wx号' }
+            //     ]
+            // },
+            tableData:[{
+                num:'123456789',
+                name:'张三',
+                phone:'1581xxxxxxx',
+                wx:'xxxxxx',
+                sushe:'32#XXX',
+                sex:'0',
+                
+                graduate:'2014-09-01'
+              },
+              {
+                num:'123456789',
+                name:'张三',
+                phone:'1581xxxxxxx',
+                wx:'xxxxxx',
+                sushe:'32#XXX',
+                sex:'0',
+                graduate:'2014-09-1'
+              },
+              {
+                num:'123456789',
+                name:'张三',
+                phone:'1581xxxxxxx',
+                wx:'xxxxxx',
+                sushe:'32#XXX',
+                sex:'0',
+                graduate:'2014-09-1'
+              },
+              {
+                num:'123456789',
+                name:'张三',
+                phone:'1581xxxxxxx',
+                wx:'xxxxxx',
+                sushe:'32#XXX',
+                sex:'0',
+                graduate:'2014-09-1'
+              },
+              {
+                num:'123456789',
+                name:'李四',
+                phone:'1581xxxxxxx',
+                wx:'xxxxxx',
+                sushe:'32#XXX',
+                sex:'0',
+                graduate:'2014-09-1'
+              },
+            ],
             modalType: 0, // 0表示新增的弹窗， 1表示编辑
             total: 0, //当前的总条数
             pageData: {
@@ -143,21 +214,40 @@ export default {
     },
     methods: {
         // 提交用户表单
+        addUser(data){
+          console.log(data)
+          const findres=this.tableData.find((x)=>x.num==this.tableData.num)
+          if(!findres) this.tableData.push(data)
+          else{
+            this.$message({
+                        type: 'info',
+                        message: '添加失败'
+                    })
+          }
+        },
+        editUser(data){
+
+        },
+        delUser(val){
+
+        },
         submit() {
             this.$refs.form.validate((valid) => {
                 // console.log(valid, 'valid')
                 if (valid) {
                     // 后续对表单数据的处理
                     if (this.modalType === 0) {
-                        addUser(this.form).then(() => {
+                        console.log(this.form)
+                        this.addUser(this.form)
                             // 重新获取列表的接口
-                            this.getList()
-                        })
+                        // this.getList()
+                       
                     } else {
-                        editUser(this.form).then(() => {
-                            // 重新获取列表的接口
-                            this.getList()
-                        })
+                       this.delUser(this.form)
+                        // editUser(this.form).then(() => {
+                        //     // 重新获取列表的接口
+                        //     this.getList()
+                        // })
                     }
 
                     // 清空表单的数据
@@ -187,14 +277,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
                 }).then(() => {
-                    delUser({ id: row.id }).then(() => {
-                        this.$message({
-                            type: 'success',
-                            message: '删除成功!'
-                        });
-                        // 重新获取列表的接口
-                        this.getList()
-                    })
+                    this.delUser(row.num)
                     
                 }).catch(() => {
                     this.$message({
@@ -210,12 +293,14 @@ export default {
         // 获取列表的数据
         getList() {
             // 获取的列表的数据
-            getUser({params: {...this.userForm, ...this.pageData}}).then(({ data }) => {
-                console.log(data)
-                this.tableData = data.list
+            
+            this.total=tableData.length()||0
+            // getUser({params: {...this.userForm, ...this.pageData}}).then(({ data }) => {
+            //     console.log(data)
+            //     this.tableData = data.list
 
-                this.total = data.count || 0
-            })
+            //     this.total = data.count || 0
+            // })
         },
         // 选择页码的回调函数
         handlePage(val) {
