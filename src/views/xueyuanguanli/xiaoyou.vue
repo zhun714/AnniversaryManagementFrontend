@@ -1,7 +1,7 @@
 <template>
   <div class="manage">
         <el-dialog
-            :title=" modalType == 0 ? '新增背景' :'编辑背景'"
+            :title=" modalType == 0 ? '新增风采校友' :'编辑风采校友'"
             :visible.sync="dialogVisible"
             width="50%"
             :before-close="handleClose">
@@ -56,15 +56,15 @@
           <div class="content" v-for="item in tableData" :key="item.name">
             <div class="table-header">
                 <div class="header-left">
-                    <span class="edit" @click="handleEdit(item)">编辑</span>
+                    <span class="edit" style="cursor:pointer" @click="handleEdit(item)">编辑</span>
                     <span class="font_6 span_20">|</span>
-                    <span class="del" @click="handleDelete(item)">删除</span>
+                    <span class="del" style="cursor:pointer" @click="handleDelete(item)">删除</span>
                 </div>
             </div>
             <div class="table-content">
                   <div class="photo">
                     <img
-                      class="image_17" style="width: 180px;height: 200px;"
+                       style="width: 180px;height: 200px;border-radius: 5px;"
                       :src="item.ImageUrl"
                     />
                   </div>

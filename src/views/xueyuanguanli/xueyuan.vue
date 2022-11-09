@@ -45,9 +45,9 @@
             <div class="content" v-for="item in tableData" :key="item.name">
               <div class="table-header">
                   <div class="header-left">
-                      <span class="edit" @click="handleEdit(item)">编辑</span>
+                      <span class="edit" style="cursor:pointer" @click="handleEdit(item)">编辑</span>
                       <span class="font_6 span_20">|</span>
-                      <span class="del" @click="handleDelete(item)">删除</span>
+                      <span class="del" style="cursor:pointer" @click="handleDelete(item)">删除</span>
                   </div>
               </div>
               <div class="table-content">

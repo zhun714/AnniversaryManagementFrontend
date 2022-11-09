@@ -7,13 +7,13 @@
             :before-close="handleClose">
             <!-- 用户的表单信息 -->
             <el-form ref="form" :rules="rules" :inline="true" :model="form" label-width="80px">
-                <el-form-item label="活动类型" prop="type">
+                <el-form-item label="活动类型" >
                     <el-input placeholder="请输入活动类型" v-model="form.type"></el-input>
                 </el-form-item>
-                <el-form-item label="活动标题" prop="title">
+                <el-form-item label="活动标题" >
                     <el-input placeholder="请输入活动标题" v-model="form.title"></el-input>
                 </el-form-item>
-                <el-form-item label="活动次序" prop="order">
+                <el-form-item label="活动次序" >
                     <el-input placeholder="请输入次序" v-model="form.order"></el-input>
                 </el-form-item>
             </el-form>
@@ -154,6 +154,7 @@ export default {
 
         },
         submit() {
+            console.log(this.form)
             this.$refs.form.validate((valid) => {
                 // console.log(valid, 'valid')
                 if (valid) {

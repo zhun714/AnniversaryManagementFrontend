@@ -13,10 +13,10 @@ background-attachment: fixed;">
         <img class="fzu" src="https://img.js.design/assets/img/63549d400dbc9d402e4c43b0.png#e1b5aade7e79ad18395c556765ad3cc4" style="width:45px;height:45px">
         <h3 >院庆后台管理系统</h3>
     </div>
-    <el-form-item label="用户名" prop="username" label-width="80px" class="username">
+    <el-form-item label="用户名"  label-width="80px" class="username">
         <el-input type="input" placeholder="请输入用户名" v-model="form.username" autocomplete="off"></el-input>
     </el-form-item>
-    <el-form-item label="密码" label-width="80px" prop="password" class="password">
+    <el-form-item label="密码" label-width="80px"  class="password">
         <el-input type="password" placeholder="请输入密码" v-model="form.password" autocomplete="off"></el-input>
     </el-form-item>
     <el-form-item class="submit">
@@ -53,7 +53,7 @@ export default {
   methods:{
     login(){
         getMenu(this.form).then(({data:res})=>{
-            // console.log(res)
+            console.log(res)
             if(res.code==20000){
                 this.$store.commit('clearMenu')
                 this.$store.commit('setMenu',res.data.menu)

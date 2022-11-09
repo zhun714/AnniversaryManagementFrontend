@@ -6,11 +6,7 @@ export const getData = () => {
     return http.get('/home/getData')
 }
 
-export const getUser = (params) => {
-    console.log(params, 'params')
-    // 返回用户列表
-    return http.get('/user/getUser', params)
-}
+export const getUser ='/user/select'
 
 export const addUser = (data) => {
     return http.post('/user/add', data)
@@ -21,7 +17,7 @@ export const editUser = (data) => {
 }
 
 export const delUser = (data) => {
-    return http.post('/user/del', data)
+    return http.post('/user/delete', data)
 }
 
 export const getMenu = (data) => {

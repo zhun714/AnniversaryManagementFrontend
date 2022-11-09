@@ -1,6 +1,6 @@
 <template>
   <div class="manage">
-        
+
         <div class="manage-header">
             <el-form :inline="true" :model="blessingForm">
                 <el-form-item>
@@ -101,7 +101,7 @@ export default {
   },
     methods: {
         // 提交用户表单
-        
+
         editblessing(data){
 
         },
@@ -122,19 +122,19 @@ export default {
                 type: 'warning'
                 }).then(() => {
                     this.delblessing(row.num)
-                    
+
                 }).catch(() => {
                     this.$message({
                         type: 'info',
                         message: '已取消删除'
-                    });          
+                    });
             });
         },
 
         // 获取列表的数据
         getList() {
             // 获取的列表的数据
-            
+
             this.total=tableData.length()||0
             // getblessing({params: {...this.blessingForm, ...this.pageData}}).then(({ data }) => {
             //     console.log(data)
@@ -143,8 +143,8 @@ export default {
             //     this.total = data.count || 0
             // })
         },
-    
-        
+
+
         // 选择页码的回调函数
         handlePage(val) {
             // console.log(val, 'val')

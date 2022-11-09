@@ -7,25 +7,25 @@
             :before-close="handleClose">
             <!-- 用户的表单信息 -->
             <el-form ref="form" :rules="rules" :inline="true" :model="form" label-width="80px">
-                <el-form-item label="学号" prop="num">
+                <el-form-item label="学号" >
                     <el-input placeholder="请输入学号" v-model="form.num"></el-input>
                 </el-form-item>
-                <el-form-item label="姓名" prop="name">
+                <el-form-item label="姓名" >
                     <el-input placeholder="请输入姓名" v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="电话号码" prop="phone">
+                <el-form-item label="电话号码" >
                     <el-input placeholder="请输入电话" v-model="form.phone"></el-input>
                 </el-form-item>
-                <el-form-item label="宿舍号" prop="sushe">
+                <el-form-item label="宿舍号" >
                     <el-input placeholder="请输入宿舍号" v-model="form.sushe"></el-input>
                 </el-form-item>
-                <el-form-item label="性别" prop="sex">
+                <el-form-item label="性别" >
                     <el-select v-model="form.sex" placeholder="请选择">
                         <el-option label="男" :value="1"></el-option>
                         <el-option label="女" :value="0"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="毕业日期" prop="graduate">
+                <el-form-item label="毕业日期" >
                     <el-date-picker
                         v-model="form.graduate"
                         type="date"
@@ -33,14 +33,14 @@
                         value-format="yyyy-MM-DD">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="微信号" prop="wx">
+                <el-form-item label="微信号" >
                     <el-input placeholder="请输入wx号" v-model="form.wx"></el-input>
                 </el-form-item>
             </el-form>
 
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancel">取 消</el-button>
-                <el-button type="primary" @click="submit">确 定</el-button>
+                <el-button type="primary" @click="submit()">确 定</el-button>
             </span>
         </el-dialog>
         <div class="manage-header">
@@ -114,7 +114,8 @@
     </div>
 </template>
 <script>
-// import { getUser, addUser, editUser, delUser } from '@/api'
+import http from '../../utils/requset'
+import  {addUser,editUser,delUser,getUser } from '../../api/index'
 export default {
     data() {
         return {
@@ -131,29 +132,29 @@ export default {
             user:{
               name:'',
             },
-            // rules: {
-            //     name: [
-            //         { required: true, message: '请输入姓名' }
-            //     ],
-            //     num: [
-            //         { required: true, message: '请输入学号' }
-            //     ],
-            //     sex: [
-            //         { required: true, message: '请选择性别' }
-            //     ],
-            //     graduate: [
-            //         { required: true, message: '请选择毕业日期' }
-            //     ],
-            //     phone: [
-            //         { required: true, message: '请输入电话' }
-            //     ],
-            //     sushe:[
-            //         { required: true, message: '请输入宿舍号' }
-            //     ],
-            //     wx:[
-            //        { required: true, message: '请输入wx号' }
-            //     ]
-            // },
+            rules: {
+                // name1: [
+                //     { required: true, message: '请输入姓名' }
+                // ],
+                // num1: [
+                //     { required: true, message: '请输入学号' }
+                // ],
+                // sex1: [
+                //     { required: true, message: '请选择性别' }
+                // ],
+                // graduate1: [
+                //     { required: true, message: '请选择毕业日期' }
+                // ],
+                // phone1: [
+                //     { required: true, message: '请输入电话' }
+                // ],
+                // sushe1:[
+                //     { required: true, message: '请输入宿舍号' }
+                // ],
+                // wx1:[
+                //    { required: true, message: '请输入wx号' }
+                // ]
+            },
             tableData:[{
                 num:'123456789',
                 name:'张三',
@@ -161,7 +162,7 @@ export default {
                 wx:'xxxxxx',
                 sushe:'32#XXX',
                 sex:'0',
-                
+
                 graduate:'2014-09-01'
               },
               {
@@ -213,41 +214,25 @@ export default {
         }
     },
     methods: {
-        // 提交用户表单
-        addUser(data){
-          console.log(data)
-          const findres=this.tableData.find((x)=>x.num==this.tableData.num)
-          if(!findres) this.tableData.push(data)
-          else{
-            this.$message({
-                        type: 'info',
-                        message: '添加失败'
-                    })
-          }
-        },
-        editUser(data){
-
-        },
-        delUser(val){
-
-        },
+        // 提交用户表
         submit() {
+            console.log(this.form)
             this.$refs.form.validate((valid) => {
-                // console.log(valid, 'valid')
+                console.log(valid, 'valid')
                 if (valid) {
                     // 后续对表单数据的处理
                     if (this.modalType === 0) {
                         console.log(this.form)
-                        this.addUser(this.form)
-                            // 重新获取列表的接口
-                        // this.getList()
-                       
+                      addUser(this.form).then(() => {
+                        // 重新获取列表的接口
+                        this.getList()
+                      })
+
                     } else {
-                       this.delUser(this.form)
-                        // editUser(this.form).then(() => {
-                        //     // 重新获取列表的接口
-                        //     this.getList()
-                        // })
+                      editUser(this.form).then(() => {
+                        // 重新获取列表的接口
+                        this.getList()
+                      })
                     }
 
                     // 清空表单的数据
@@ -277,13 +262,20 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
                 }).then(() => {
-                    this.delUser(row.num)
-                    
+              delUser({ id: row.id }).then(() => {
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+                // 重新获取列表的接口
+                this.getList()
+              })
+
                 }).catch(() => {
                     this.$message({
                         type: 'info',
                         message: '已取消删除'
-                    });          
+                    });
             });
         },
         handleAdd() {
@@ -293,14 +285,19 @@ export default {
         // 获取列表的数据
         getList() {
             // 获取的列表的数据
-            
-            this.total=tableData.length()||0
-            // getUser({params: {...this.userForm, ...this.pageData}}).then(({ data }) => {
-            //     console.log(data)
-            //     this.tableData = data.list
 
-            //     this.total = data.count || 0
-            // })
+            // this.total=tableData.length()||0
+            http({
+                method:'post',
+                url:getUser,
+            }).then(res=>{
+                console.log('getuser',res.data)
+            }).catch(() => {
+                this.$message({
+                    type: 'error',
+                    message: '服务器错误！'
+                });
+                })
         },
         // 选择页码的回调函数
         handlePage(val) {
