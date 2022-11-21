@@ -8,16 +8,16 @@
             <!-- 用户的表单信息 -->
             <el-form ref="form" :rules="rules" :inline="true" :model="form" label-width="80px">
                 <el-form-item label="学号" >
-                    <el-input placeholder="请输入学号" v-model="form.num"></el-input>
+                    <el-input placeholder="请输入学号" v-model="form.sid"></el-input>
                 </el-form-item>
                 <el-form-item label="姓名" >
                     <el-input placeholder="请输入姓名" v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="电话号码" >
-                    <el-input placeholder="请输入电话" v-model="form.phone"></el-input>
+                <el-form-item label="邮箱" >
+                    <el-input placeholder="请输入邮箱(xx@xx.com)" v-model="form.email"></el-input>
                 </el-form-item>
                 <el-form-item label="宿舍号" >
-                    <el-input placeholder="请输入宿舍号" v-model="form.sushe"></el-input>
+                    <el-input placeholder="请输入宿舍号" v-model="form.dormitory"></el-input>
                 </el-form-item>
                 <el-form-item label="性别" >
                     <el-select v-model="form.sex" placeholder="请选择">
@@ -27,14 +27,14 @@
                 </el-form-item>
                 <el-form-item label="毕业日期" >
                     <el-date-picker
-                        v-model="form.graduate"
+                        v-model="form.graduationTime"
                         type="date"
                         placeholder="选择日期"
                         value-format="yyyy-MM-DD">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="微信号" >
-                    <el-input placeholder="请输入wx号" v-model="form.wx"></el-input>
+                <el-form-item label="微信Id" >
+                    <el-input placeholder="请输入微信Id号" v-model="form.openId"></el-input>
                 </el-form-item>
             </el-form>
 
@@ -43,12 +43,9 @@
                 <el-button type="primary" @click="submit()">确 定</el-button>
             </span>
         </el-dialog>
-        <div class="manage-header">
-            <el-button @click="handleAdd" type="primary">
-                + 新增
-            </el-button>
+        <div class="manage-header"  style="text-align:right;margin:0px auto 0px auto;">
             <!-- form搜索区域 -->
-            <el-form :inline="true" :model="userForm">
+            <el-form :inline="true" :model="userForm" >
                 <el-form-item>
                     <el-input placeholder="请输入名称" v-model="userForm.name"></el-input>
                 </el-form-item>
@@ -60,42 +57,61 @@
         <div class="common-tabel">
             <el-table
                 stripe
-                height="90%"
+                height="95%"
                 :data="tableData"
                 style="width: 100%">
                 <el-table-column
-                    prop="num"
-                    label="学号">
+                    prop="id"
+                    label="ID">
+                </el-table-column>
+                <el-table-column
+                    prop="sid"
+                    label="学号"
+                    align="center">
                 </el-table-column>
                 <el-table-column
                     prop="name"
-                    label="姓名">
+                    label="姓名"
+                    align="center">
                 </el-table-column>
                 <el-table-column
-                    prop="phone"
-                    label="手机号">
+                    prop="email"
+                    label="邮箱"
+                    align="center">
                 </el-table-column>
                 <el-table-column
-                    prop="sushe"
-                    label="宿舍号">
+                    prop="dormitory"
+                    label="宿舍号"
+                    align="center">
                 </el-table-column>
                 <el-table-column
                     prop="sex"
-                    label="性别">
+                    label="性别"
+                    align="center">
                     <template slot-scope="scope">
                         <span>{{ scope.row.sex == 1 ? '男' : '女' }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
-                    prop="graduate"
-                    label="毕业日期">
+                    prop="graduationTime"
+                    label="毕业日期"
+                    align="center">
                 </el-table-column>
                 <el-table-column
-                    prop="wx"
-                    label="wx号">
+                    prop="openId"
+                    label="微信Id"
+                    align="center">
                 </el-table-column>
                 <el-table-column
-                    prop="wx"
+                    prop="banFlag"
+                    label="禁用"
+                    align="center">
+                    <template slot-scope="scope">
+                        <el-switch v-model="scope.row.banFlag"></el-switch>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                    prop="banFlag"
                     label="操作">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
@@ -107,6 +123,7 @@
                 <el-pagination
                     layout="prev, pager, next"
                     :total="total"
+                    :page-size="pageSize"
                     @current-change="handlePage">
                 </el-pagination>
             </div>
@@ -115,19 +132,19 @@
 </template>
 <script>
 import http from '../../utils/requset'
-import  {addUser,editUser,delUser,getUser } from '../../api/index'
+import  {editUser,delUser,getUser,findUser } from '../../api/index'
 export default {
     data() {
         return {
             dialogVisible: false,
             form: {
-                num: '',
+                sid: "",
                 name: '',
-                phone: '',
-                sushe: '',
+                email: '',
+                dormitory: '',
                 sex: '',
-                graduate: '',
-                wx:''
+                graduationTime: '',
+                openId:''
             },
             user:{
               name:'',
@@ -155,86 +172,30 @@ export default {
                 //    { required: true, message: '请输入wx号' }
                 // ]
             },
-            tableData:[{
-                num:'123456789',
-                name:'张三',
-                phone:'1581xxxxxxx',
-                wx:'xxxxxx',
-                sushe:'32#XXX',
-                sex:'0',
-
-                graduate:'2014-09-01'
-              },
-              {
-                num:'123456789',
-                name:'张三',
-                phone:'1581xxxxxxx',
-                wx:'xxxxxx',
-                sushe:'32#XXX',
-                sex:'0',
-                graduate:'2014-09-1'
-              },
-              {
-                num:'123456789',
-                name:'张三',
-                phone:'1581xxxxxxx',
-                wx:'xxxxxx',
-                sushe:'32#XXX',
-                sex:'0',
-                graduate:'2014-09-1'
-              },
-              {
-                num:'123456789',
-                name:'张三',
-                phone:'1581xxxxxxx',
-                wx:'xxxxxx',
-                sushe:'32#XXX',
-                sex:'0',
-                graduate:'2014-09-1'
-              },
-              {
-                num:'123456789',
-                name:'李四',
-                phone:'1581xxxxxxx',
-                wx:'xxxxxx',
-                sushe:'32#XXX',
-                sex:'0',
-                graduate:'2014-09-1'
-              },
+            tableData:[
+                
             ],
             modalType: 0, // 0表示新增的弹窗， 1表示编辑
             total: 0, //当前的总条数
-            pageData: {
-                page: 1,
-                limit: 10
-            },
             userForm: {
                 name: ''
-            }
+            },
+            pageSize:8,
+            pageNo:1
         }
     },
     methods: {
         // 提交用户表
         submit() {
-            console.log(this.form)
             this.$refs.form.validate((valid) => {
-                console.log(valid, 'valid')
                 if (valid) {
                     // 后续对表单数据的处理
-                    if (this.modalType === 0) {
-                        console.log(this.form)
-                      addUser(this.form).then(() => {
-                        // 重新获取列表的接口
-                        this.getList()
-                      })
-
-                    } else {
+                   
+                     console.log(this.form)
                       editUser(this.form).then(() => {
                         // 重新获取列表的接口
                         this.getList()
                       })
-                    }
-
                     // 清空表单的数据
                     this.$refs.form.resetFields()
                     // 关闭弹窗
@@ -262,7 +223,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
                 }).then(() => {
-              delUser({ id: row.id }).then(() => {
+              delUser( row.id ).then(() => {
                 this.$message({
                   type: 'success',
                   message: '删除成功!'
@@ -278,20 +239,20 @@ export default {
                     });
             });
         },
-        handleAdd() {
-            this.modalType = 0
-            this.dialogVisible = true
-        },
         // 获取列表的数据
         getList() {
             // 获取的列表的数据
-
-            // this.total=tableData.length()||0
             http({
                 method:'post',
                 url:getUser,
+                data:{
+                    pageNo: this.pageNo,
+                    pageSize: this.pageSize,
+                }
             }).then(res=>{
                 console.log('getuser',res.data)
+                this.tableData=res.data.dataList
+                this.total = res.data.total;
             }).catch(() => {
                 this.$message({
                     type: 'error',
@@ -301,13 +262,29 @@ export default {
         },
         // 选择页码的回调函数
         handlePage(val) {
-            // console.log(val, 'val')
-            this.pageData.page = val
+            console.log(val, 'val')
+            this.pageNo = val
             this.getList()
         },
         // 列表的查询
         onSubmit() {
-            this.getList()
+            http({
+                method:'post',
+                url:getUser,
+                data:{
+                    name:this.userForm.name,
+                    pageNo: 1,
+                    pageSize: 100
+                }
+            }).then(res=>{
+                console.log('finduser',res.data)
+                this.tableData=res.data.dataList
+            }).catch(() => {
+                this.$message({
+                    type: 'error',
+                    message: '服务器错误！'
+                });
+                })
         }
     },
     mounted () {
@@ -318,17 +295,13 @@ export default {
 <style lang="less" scoped>
 .manage {
     height: 90%;
-    .manage-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+   
     .common-tabel {
         position: relative;
         height: calc(100% - 62px);
         .pager {
             position: absolute;
-            bottom: 0;
+            bottom: 0px;
             right: 20px;
         }
     }

@@ -12,7 +12,7 @@
     <div class="r-content">
         <el-dropdown trigger="click" size="mini">
             <span class="el-dropdown-link">
-                <img class="user" src="../assets/images/user.png" >
+                <img class="user" src="../assets/avater.png" >
             </span>
             <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>个人中心</el-dropdown-item>

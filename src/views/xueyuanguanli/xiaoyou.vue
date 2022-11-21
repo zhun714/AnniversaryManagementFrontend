@@ -6,29 +6,21 @@
             width="50%"
             :before-close="handleClose">
             <!-- 用户的表单信息 -->
-            <el-form ref="form" :rules="rules" :inline="true" :model="form" label-width="80px">
+            <el-form ref="form" :inline="true" :model="form" label-width="80px">
                 <el-form-item label="校友姓名" prop="name">
                     <el-input placeholder="请输入校友姓名" v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="校友邮箱" prop="email">
+                <!-- <el-form-item label="校友邮箱" prop="email">
                     <el-input placeholder="请输入校友邮箱" v-model="form.email"></el-input>
+                </el-form-item> -->
+                <el-form-item label="校友职业" prop="position" >
+                    <el-input placeholder="请输入校友职业" v-model="form.position"></el-input>
                 </el-form-item>
-                <el-form-item label="校友职业" prop="work" >
-                    <el-input placeholder="请输入校友职业" v-model="form.wrok"></el-input>
+                <el-form-item label="校友简介" prop="brief">
+                    <el-input placeholder="请输入校友简介" v-model="form.brief"></el-input>
                 </el-form-item>
-                <el-form-item label="校友简介" prop="introduce">
-                    <el-input placeholder="请输入校友简介" v-model="form.introduce"></el-input>
-                </el-form-item>
-                <el-form-item label="校友头像" prop="ImageUrl">
-                    <el-upload
-                      class="upload-demo"
-                      drag
-                      action="https://jsonplaceholder.typicode.com/posts/"
-                      multiple>
-                      <i class="el-icon-upload"></i>
-                      <div class="el-upload__span">将文件拖到此处，或<em>点击上传</em></div>
-                      <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-                    </el-upload>
+                <el-form-item label="校友头像:" >
+                  <input type="file" ref="fileId"  @change="getFile">
                 </el-form-item>
             </el-form>
 
@@ -52,143 +44,150 @@
             </el-form>
         </div>
         <span class="title">知名校友列表</span>
-        <div class="table"> 
+        <div class="table" style="overflow:auto;padding-bottom: 20px;"> 
           <div class="content" v-for="item in tableData" :key="item.name">
             <div class="table-header">
                 <div class="header-left">
                     <span class="edit" style="cursor:pointer" @click="handleEdit(item)">编辑</span>
                     <span class="font_6 span_20">|</span>
-                    <span class="del" style="cursor:pointer" @click="handleDelete(item)">删除</span>
+                    <span class="del" style="cursor:pointer" @click="handleDelete(item.id)">删除</span>
                 </div>
             </div>
             <div class="table-content">
                   <div class="photo">
                     <img
                        style="width: 180px;height: 200px;border-radius: 5px;"
-                      :src="item.ImageUrl"
+                      :src="item.photo"
                     />
                   </div>
                     <div class="information">
-                      <span class="work">{{item.work}}</span>
+                      <span class="work">{{item.position}}</span>
                       <div class="person">
                         <span class="name">{{item.name}}</span>
-                        <span class="font_2">|</span>
-                        <span class="email">{{item.email}}</span>
+                        
                       </div>
                     </div>
                     <div class="intro"> 
                       <span>
-                        详情介绍： {{item.introduce}}
+                        详情介绍： {{item.brief}}
                       </span>
                     </div>      
                 
-                <!-- <div class="divider"></div> -->
             </div>
           </div>
-          <div class="pager">
-                <el-pagination
-                    layout="prev, pager, next"
-                    :total="total"
-                    >
-                </el-pagination>
-            </div>  
         </div>
         
     </div>
 </template>
 <script>
+import http from '../../utils/requset'
+import { getalumnus,editalumnus,delalumnus,addalumnus} from '../../api'
 export default {
   name: 'huodong',
   data () {
     return {
       dialogVisible: false,
       form:{
+        id:'',
         name:'',
-        email:'',
-        work:'',
-        introduce:'',
-        ImageUrl: ''
-        
+        brief:'',
+        photo:'',
+        position:'',
+        phFile:''
       }, 
-      rules: {
-          name: [
-              { required: true, message: '请输入校友姓名' }
-          ],
-          email: [
-              { required: true, message: '请输入校友邮箱' }
-          ],
-          work: [
-              { required: true, message: '请输入校友工作' }
-          ],
-          introduce: [
-              { required: true, message: '请输入校友简介' },
-               {
-                min:10,message:'校友简介不能小于10个字'
-            }
-          ]
-      },
+      // rules: {
+      //     name: [
+      //         { required: true, message: '请输入校友姓名' }
+      //     ],
+      //     email: [
+      //         { required: true, message: '请输入校友邮箱' }
+      //     ],
+      //     work: [
+      //         { required: true, message: '请输入校友工作' }
+      //     ],
+      //     introduce: [
+      //         { required: true, message: '请输入校友简介' },
+      //          {
+      //           min:10,message:'校友简介不能小于10个字'
+      //       }
+      //     ]
+      // },
        tableData:[
-          {
-          name:'林慧民',
-          email:'xxxxxxx@163.com',
-          work:'中国科学院院士',
-          introduce:' 1977年入福州大学计算数学专业学习，1982年2月在福州大学计算机系计算机...',
-          ImageUrl: 'https://codefun-proj-user-res-1256085488.cos.ap-guangzhou.myqcloud.com/6353f1ea5a7e3f0310e61ff3/6353f319fe65f70012e4f328/16674747139951324366.png'
           
-        },
-        {
-          name:'林慧民',
-          email:'xxxxxxx@163.com',
-          work:'中国科学院院士',
-          introduce:' 1977年入福州大学计算数学专业学习，1982年2月在福州大学计算机系计算机...',
-          ImageUrl: 'https://codefun-proj-user-res-1256085488.cos.ap-guangzhou.myqcloud.com/6353f1ea5a7e3f0310e61ff3/6353f319fe65f70012e4f328/16674747139951324366.png'
-          
-        }
       ],
       modalType: 0, // 0表示新增的弹窗， 1表示编辑
       total: 0, //当前的总条数
-      pageData: {
-          page: 1,
-          limit: 10
-      },
+      pageNo:1,
+      pageSize:20,
       xyForm: {
           name: ''
       }
     }
   },
+  mounted(){
+    this.getList()
+  },
     methods: {
         // 提交用户表单
-        addxy(data){
-          console.log(data)
-          const findres=this.tableData.find((x)=>x.num==this.tableData.num)
-          if(!findres) this.tableData.push(data)
-          else{
-            this.$message({
-                        type: 'info',
-                        message: '添加失败'
-                    })
-          }
-        },
-        editxy(data){
-
-        },
-        delxy(val){
-
-        },
+        getFile(){
+        let files = this.$refs.fileId.files[0];
+     this.form.phFile= files;
+     console.log(files)
+      },
         submit() {
-            this.$refs.form.validate((valid) => {
-                // console.log(valid, 'valid')
+            let that = this;
+                console.log('11213',this.modalType)
+                if (that.form.phFile == "") {
+                    that.$message.error('请先添加文件');
+                    return;
+                }
+                let formData = new window.FormData(); 
+                // console.log(that.form.phFile)
+                formData.append("photo", that.form.phFile);
+                // console.log('1231',postdata)
+                this.$refs.form.validate((valid) => {
                 if (valid) {
                     // 后续对表单数据的处理
+                    console.log(this.fileList)
+                   
                     if (this.modalType === 0) {
-                        console.log(this.form)
-                        this.addxy(this.form)
-                            // 重新获取列表的接口
-                        // this.getList()
-                       
+                       http({
+                        method:'post',
+                        url:addalumnus,
+                        headers:{
+                            "Content-Type":"multipart/form-date"
+                        },
+                        // processDate:false,
+                        data:formData,
+                        params:{
+                           brief:this.form.brief,
+                            name:this.form.name,
+                            position:this.form.position,
+                            
+                        }
+                       }).then(()=>{
+
+                            this.getList()
+                        })
                     } else {
-                       this.delxy(this.form)
-                        // editxy(this.form).then(() => {
+                       http({
+                        method:'post',
+                        url:editalumnus,
+                        headers:{
+                            "Content-Type":"multipart/form-date"
+                        },
+                        data:formData,
+                        params:{
+                            id:this.form.id,
+                            brief:this.form.brief,
+                            name:this.form.name,
+                            position:this.form.position,
+                        }
+                       }).then(()=>{
+
+                            this.getList()
+                            })
+                        // editbk(this.form).then(() => {
                         //     // 重新获取列表的接口
                         //     this.getList()
                         // })
@@ -215,13 +214,21 @@ export default {
             // 注意需要对当前行数据进行深拷贝，否则会出错
             this.form = JSON.parse(JSON.stringify(row))
         },
-        handleDelete(row) {
+        handleDelete(id) {
             this.$confirm('是否确认删除?', '提示', {
                 confirmButtonspan: '确定',
                 cancelButtonspan: '取消',
                 type: 'warning'
-                }).then(() => {
-                    this.delxy(row.num)
+                }).then((res) => {
+                  console.log('del',res)
+                    delalumnus(id).then(()=>{
+                        this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                      });
+                      // 重新获取列表的接口
+                      this.getList()
+                    })
                     
                 }).catch(() => {
                     this.$message({
@@ -237,15 +244,24 @@ export default {
         // 获取列表的数据
         getList() {
             // 获取的列表的数据
+            http({
+                method:'post',
+                url:getalumnus,
+                data:{
+                    pageNo: this.pageNo,
+                    pageSize: this.pageSize,
+                }
+            }).then(res=>{
+                console.log('getalumnus',res.data)
+                this.tableData=res.data.dataList
+                this.total = res.data.total;
+            }).catch(() => {
+                this.$message({
+                    type: 'error',
+                    message: '服务器错误！'
+                });
+                })
             
-            this.total=tableData.length()||2
-            
-            // getxy({params: {...this.xyForm, ...this.pageData}}).then(({ data }) => {
-            //     console.log(data)
-            //     this.tableData = data.list
-
-            //     this.total = data.count || 0
-            // })
         },
     
         

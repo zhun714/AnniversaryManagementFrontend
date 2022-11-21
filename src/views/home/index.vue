@@ -37,29 +37,34 @@
           <img
             class="img_15"
             src="https://codefun-proj-user-res-1256085488.cos.ap-guangzhou.myqcloud.com/6353f1ea5a7e3f0310e61ff3/6353f319fe65f70012e4f328/16674899797721454888.png"
+            @click="changetoxueyuan"
           />
         </div>
         <div class="flex-col items-center img-wrapper_2">
           <img
             class="img_16"
             src="https://codefun-proj-user-res-1256085488.cos.ap-guangzhou.myqcloud.com/6353f1ea5a7e3f0310e61ff3/6353f319fe65f70012e4f328/16674899797767166472.png"
+            @click="changetohuodong"
           />
         </div>
         <div class="flex-col items-center img-wrapper_3">
           <img
             class="img_19"
+            @click="changetouser"
             src="https://codefun-proj-user-res-1256085488.cos.ap-guangzhou.myqcloud.com/6353f1ea5a7e3f0310e61ff3/6353f319fe65f70012e4f328/16674899797779357538.png"
           />
         </div>
         <div class="flex-col items-center img-wrapper_4">
           <img
             class="img_20"
+            @click="changetozhufu"
             src="https://codefun-proj-user-res-1256085488.cos.ap-guangzhou.myqcloud.com/6353f1ea5a7e3f0310e61ff3/6353f319fe65f70012e4f328/16674899797797868328.png"
           />
         </div>
         <div class="flex-col items-center img-wrapper_5">
           <img
             class="img_17"
+            @click="changetobk"
             src="https://codefun-proj-user-res-1256085488.cos.ap-guangzhou.myqcloud.com/6353f1ea5a7e3f0310e61ff3/6353f319fe65f70012e4f328/16674899797802287687.png"
           />
         </div>
@@ -67,22 +72,21 @@
       <div class="flex-col items-center img-wrapper_6">
         <img
           class="img_18"
+          @click="changetoxy"
           src="https://codefun-proj-user-res-1256085488.cos.ap-guangzhou.myqcloud.com/6353f1ea5a7e3f0310e61ff3/6353f319fe65f70012e4f328/16674899797814654839.png"
         />
       </div>
     </div>
-    <div class="flex-row justify-between group_15">
+    <div style="display:flex;justify-content:space-between">
       <span class="font_6">学院风采</span>
-      <span class="font_6">活动管理</span>
-      <span class="font_6">校友管理</span>
-      <div class="flex-row space-x-168">
-        <span class="font_6">祝福审核</span>
-        <span class="font_6">虚拟背景管理</span>
-      </div>
-      <span class="font_6">校友风采</span>
+      <span class="font_6" style="margin-left:50px">活动管理</span>
+      <span class="font_6" style="margin-left:45px">校友管理</span>
+      <span class="font_6" style="margin-left:30px">祝福审核</span>
+      <span class="font_6" style="margin-left:30px" >虚拟背景管理</span>
+      <span class="font_6" style="margin-right:10px">校友风采</span>
     </div>
   </div>
-  <div class="flex-row space-x-9 group_16">
+  <!-- <div class="flex-row space-x-9 group_16">
     <div class="flex-col section_5">
       <div class="flex-row justify-between">
         <span class="font_2 span_16">活跃学员</span>
@@ -173,183 +177,49 @@
     <div class="flex-col items-center section_6">
       <img src="../../assets/images/huoyue.png" alt="">
     </div>
-  </div>
+  </div> -->
 </div>
 </template>
 <script>
-import {getData} from '../../api'
 // import * as echarts from 'echarts'
 export default {
   name: 'Home',
-  // data () {
-  //   return {
-  //   //   user: require('@/assets/imgs/user.png'),
-  //   //   tableData: [
-        
-  //   //   ],
-  //   //   tableLabel: {
-  //   //     name: '课程',
-  //   //     todayBuy: '今日购买',
-  //   //     monthBuy: '本月购买',
-  //   //     totalBuy: '总购买'
-  //   //   },
-  //   //   countData: [
-  //   //     {
-  //   //       name: '今日支付订单',
-  //   //       value: 1234,
-  //   //       icon: 'success',
-  //   //       color: '#2ec7c9'
-  //   //     },
-  //   //     {
-  //   //       name: '今日收藏订单',
-  //   //       value: 210,
-  //   //       icon: 'star-on',
-  //   //       color: '#ffb980'
-  //   //     },
-  //   //     {
-  //   //       name: '今日收藏订单',
-  //   //       value: 210,
-  //   //       icon: 'star-on',
-  //   //       color: '#ffb980'
-  //   //     },
-  //   //     {
-  //   //       name: '今日收藏订单',
-  //   //       value: 210,
-  //   //       icon: 'star-on',
-  //   //       color: '#ffb980'
-  //   //     },
-  //   //     {
-  //   //       name: '今日收藏订单',
-  //   //       value: 210,
-  //   //       icon: 'star-on',
-  //   //       color: '#ffb980'
-  //   //     },
-  //   //     {
-  //   //       name: '今日收藏订单',
-  //   //       value: 210,
-  //   //       icon: 'star-on',
-  //   //       color: '#ffb980'
-  //   //     }
-  //   //   ]
-  //   // }
-  // },
-  // mounted () {
-  //   getData().then(res=>{
-  //     const {code,data} =res.data
-  //     if(code==20000){
-  //       this.tableData = data.tableData
-  //       const order=data.orderData
-  //       const xdata = order.date
-  //       const keyarrary=Object.keys(order.data[0])
-  //       const series = []
-  //       keyarrary.forEach(key=>{
-  //         series.push({
-  //           name:key,
-  //           data:order.data.map(item=>item[key]),
-  //           type:'line'
-  //         })
-  //       })
-  //       const op = {
-  //         xAxis: {
-  //           data:xdata
-  //         },
-  //         yAxis:{},
-  //         legend:{
-  //           data:keyarrary
-  //         },
-  //         series
-  //       }
-  //       const E = echarts.init(this.$refs.echarts)
-  //       E.setOption(op)
-  //        const userOprion = {
-  //         legend: {
-  //           // 图例文字颜色
-  //           spanStyle: {
-  //             color: "#333",
-  //           },
-  //         },
-  //         grid: {
-  //           left: "20%",
-  //         },
-  //         // 提示框
-  //         tooltip: {
-  //           trigger: "axis",
-  //         },
-  //         xAxis: {
-  //           type: "category", // 类目轴
-  //           data: data.userData.map(item => item.date),
-  //           axisLine: {
-  //             lineStyle: {
-  //               color: "#17b3a3",
-  //             },
-  //           },
-  //           axisLabel: {
-  //             interval: 0,
-  //             color: "#333",
-  //           },
-  //         },
-  //         yAxis: [
-  //           {
-  //             type: "value",
-  //             axisLine: {
-  //               lineStyle: {
-  //                 color: "#17b3a3",
-  //               },
-  //             },
-  //           },
-  //         ],
-  //         color: ["#2ec7c9", "#b6a2de"],
-  //         series: [
-  //           {
-  //             name:'新增用户',
-  //             data:data.userData.map(item => item.new),
-  //             type:"bar"
-  //           },
-  //           {
-  //             name:'活跃用户',
-  //             data:data.userData.map(item => item.active),
-  //             type:'bar'
-  //           }
-  //         ],
-  //       }
-  //       const U = echarts.init(this.$refs.echart1)
-  //       U.setOption(userOprion)
-  //       const videoOption = 
-  //        {
-  //         tooltip: {
-  //           trigger: "item",
-  //         },
-  //         color: [
-  //           "#0f78f4",
-  //           "#dd536b",
-  //           "#9462e5",
-  //           "#a6a6a6",
-  //           "#e1bb22",
-  //           "#39c362",
-  //           "#3ed1cf",
-  //         ],
-  //         series: [
-  //           {
-  //             data:data.videoData,
-  //             type:'pie'
-  //           }
-  //         ],
-  //        }
-  //        const V =  echarts.init(this.$refs.echart2)
-  //         V.setOption(videoOption)
-        
-  //     }
-     
-  //     console.log(res)
-  //   })
-  // }
+  methods:{
+    changetoxueyuan(){
+      this.$router.push({
+        name: "page1"
+      })
+    },
+    changetohuodong(){
+      this.$router.push({
+        name: "huodong"
+      })
+    },
+    changetozhufu(){
+      this.$router.push({
+        name: "zhufu"
+      })
+    },
+    changetobk(){
+      this.$router.push({
+        name: "bkground"
+      })
+    },
+    changetoxy(){
+      this.$router.push({
+        name: "page2"
+      })
+    },
+    changetouser(){
+      this.$router.push({
+        name: "user"
+      })
+    },
+  }
 }
 </script>
 <style lang="less" scoped>
-/************************************************************
-** 请将全局样式拷贝到项目的全局 CSS 文件或者当前页面的顶部 **
-** 否则页面将无法正常显示                                  **
-************************************************************/
+
 
 body {
   width: 100vw;

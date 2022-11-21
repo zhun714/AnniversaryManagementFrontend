@@ -18,26 +18,38 @@
                 :data="tableData"
                 style="width: 100%">
                 <el-table-column
-                    prop="comment"
+                    prop="id"
+                    label="ID">
+                </el-table-column>
+                <el-table-column
+                    prop="bless"
                     label="祝福内容">
                 </el-table-column>
                 <el-table-column
-                    prop="state"
-                    label="审核状态">
+                    prop="status"
+                    label="审核状态"
+                    align="center">
                     <template slot-scope="scope">
-                        <span>{{ scope.row.state == 1 ? '通过' : '待审核' }}</span>
+                        <span>{{ scope.row.status == 1 ? '通过' : '待审核' }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column
-                    prop="name"
-                    label="上传人">
+                    prop="createBy"
+                    label="上传人"
+                    align="center">
                 </el-table-column>
                 <el-table-column
-                    prop="state"
-                    label="操作">
+                    prop="createTime"
+                    label="上传时间"
+                    align="center">
+                </el-table-column>
+                <el-table-column
+                    prop="status"
+                    label="操作"
+                    align="center">
                     <template slot-scope="scope">
-                        <el-button v-if="scope.row.state==0" size="mini" type="success" @click="handleEdit(scope.row)">通过</el-button>
-                        <el-button v-else size="mini" type="warning" @click="handleEdit(scope.row)">驳回</el-button>
+                        <el-button v-if="scope.row.status==0" size="mini" type="success" @click="handleEdit(scope.row)">通过</el-button>
+                        <el-button v-else size="mini" type="primary" >已通过</el-button>
                         <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -53,47 +65,18 @@
     </div>
 </template>
 <script>
+import http from '../../utils/requset'
+import { editStatus,getblessing,delblessing} from '../../api'
 export default {
   name: 'huodong',
   data () {
     return {
       dialogVisible: false,
        tableData:[
-        {
-        comment:'所有的烦恼说拜拜',
-        state:0,
-        name:'我',
-        time:'2022.11.3 0:52'
-       },{
-        comment:'所有的烦恼说拜拜',
-        state:0,
-        name:'我',
-        time:'2022.11.3 0:52'
-       },
-       {
-        comment:'所有的烦恼说拜拜',
-        state:0,
-        name:'我',
-        time:'2022.11.3 0:52'
-       },
-       {
-        comment:'所有的烦恼说拜拜',
-        state:0,
-        name:'我',
-        time:'2022.11.3 0:52'
-       },
-       {
-        comment:'所有的烦恼说拜拜',
-        state:0,
-        name:'我',
-        time:'2022.11.3 0:52'
-       }
       ],
       total: 0, //当前的总条数
-      pageData: {
-          page: 1,
-          limit: 10
-      },
+      pageNo:1,
+      pageSize:10,
       blessingForm: {
           name: ''
       }
@@ -102,15 +85,12 @@ export default {
     methods: {
         // 提交用户表单
 
-        editblessing(data){
-
-        },
-        delblessing(val){
-
-        },
 
         handleEdit(row) {
-            row.state=!row.state
+            // row.status=!row.status
+            editStatus(row.id).then(()=>{
+                this.getList()
+            })
             // 注意需要对当前行数据进行深拷贝，否则会出错
             // console.log(row)
             // this.form = JSON.parse(JSON.stringify(row))
@@ -121,7 +101,14 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
                 }).then(() => {
-                    this.delblessing(row.num)
+                    delblessing(row.id).then(()=>{
+                        this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                        });
+                        // 重新获取列表的接口
+                        this.getList()
+                    })
 
                 }).catch(() => {
                     this.$message({
@@ -134,28 +121,58 @@ export default {
         // 获取列表的数据
         getList() {
             // 获取的列表的数据
-
-            this.total=tableData.length()||0
-            // getblessing({params: {...this.blessingForm, ...this.pageData}}).then(({ data }) => {
-            //     console.log(data)
-            //     this.tableData = data.list
-
-            //     this.total = data.count || 0
-            // })
+            http({
+                method:'post',
+                url:getblessing,
+                data:{
+                    pageNo: this.pageNo,
+                    pageSize: this.pageSize,
+                }
+            }).then(res=>{
+                console.log('getblessing',res.data)
+                this.tableData=res.data.dataList
+                this.total = res.data.total;
+            }).catch(() => {
+                this.$message({
+                    type: 'error',
+                    message: '服务器错误！'
+                });
+                })
         },
 
 
         // 选择页码的回调函数
         handlePage(val) {
-            // console.log(val, 'val')
-            this.pageData.page = val
+            console.log(val, 'val')
+            this.pageNo = val
             this.getList()
         },
         // 列表的查询
         onSubmit() {
-            this.getList()
+            http({
+                method:'post',
+                url:getblessing,
+                data:{
+                    createBy:this.blessingForm.name,
+                    pageNo: 1,
+                    pageSize: 200,
+                }
+            }).then(res=>{
+                console.log('getblessing',res.data)
+                this.tableData=res.data.dataList
+                this.total = res.data.total;
+            }).catch(() => {
+                this.$message({
+                    type: 'error',
+                    message: '服务器错误！'
+                });
+                })
+            
         }
     },
+     mounted () {
+        this.getList()
+    }
 }
 </script>
 <style lang="less" scoped>
@@ -169,7 +186,7 @@ export default {
         height: calc(100% - 62px);
         .pager {
             position: absolute;
-            bottom: 0;
+            // bottom: 0;
             right: 20px;
         }
     }

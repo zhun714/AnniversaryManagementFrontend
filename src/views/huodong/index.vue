@@ -6,15 +6,18 @@
             width="50%"
             :before-close="handleClose">
             <!-- 用户的表单信息 -->
-            <el-form ref="form" :rules="rules" :inline="true" :model="form" label-width="80px">
+            <el-form ref="form" :inline="true" :model="form" label-width="80px">
+                <el-form-item label="ID" >
+                    <el-input placeholder="无需输入" v-model="form.id" readonly></el-input>
+                </el-form-item>
                 <el-form-item label="活动类型" >
                     <el-input placeholder="请输入活动类型" v-model="form.type"></el-input>
                 </el-form-item>
                 <el-form-item label="活动标题" >
-                    <el-input placeholder="请输入活动标题" v-model="form.title"></el-input>
+                    <el-input placeholder="请输入活动标题" v-model="form.name"></el-input>
                 </el-form-item>
                 <el-form-item label="活动次序" >
-                    <el-input placeholder="请输入次序" v-model="form.order"></el-input>
+                    <el-input-number placeholder="请输入次序" v-model="form.priority"></el-input-number>
                 </el-form-item>
             </el-form>
 
@@ -44,21 +47,29 @@
                 :data="tableData"
                 style="width: 100%">
                 <el-table-column
+                    prop="id"
+                    label="ID">
+                </el-table-column>
+                <el-table-column
                     prop="type"
-                    label="活动类型">
+                    label="活动类型"
+                    align="center">
                 </el-table-column>
                 <el-table-column
-                    prop="title"
-                    label="活动标题">
+                    prop="name"
+                    label="活动标题"
+                    align="center">
                 </el-table-column>
                 <el-table-column
-                    prop="order"
+                    prop="priority"
                     label="活动次序"
+                    align="center"
                     sortable>
                 </el-table-column>
                 <el-table-column
                     prop="order"
-                    label="操作">
+                    label="操作"
+                    align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
                         <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
@@ -76,83 +87,62 @@
     </div>
 </template>
 <script>
+import { getProgram,editac,delac,findac,addac} from '../../api'
+import http from '../../utils/requset'
 export default {
   name: 'huodong',
   data () {
     return {
       dialogVisible: false,
       form:{
+        id:'',
         type:'',
-        title:'',
-        order:0
+        name:'',
+        priority:0
       }, 
-      rules: {
-          type: [
-              { required: true, message: '请输入活动类型' }
-          ],
-          title: [
-              { required: true, message: '请输入活动标题' }
-          ],
-          order: [
-              { required: true, message: '请输入活动次序' }
-          ]
-      },
+    //   rules: {
+    //       type: [
+    //           { required: true, message: '请输入活动类型' }
+    //       ],
+    //       title: [
+    //           { required: true, message: '请输入活动标题' }
+    //       ],
+    //       order: [
+    //           { required: true, message: '请输入活动次序' }
+    //       ]
+    //   },
        tableData:[
-        {
-        type:'诗朗诵',
-        title:'相聚校庆',
-        order:1
-       },{
-        type:'舞蹈',
-        title:'舞动福大',
-        order:5
-       },
-       {
-        type:'小品',
-        title:'学习',
-        order:3
-       },
-       {
-        type:'诗朗诵',
-        title:'相聚校庆',
-        order:4
-       },
-       {
-        type:'诗朗诵',
-        title:'相聚校庆',
-        order:2
-       }
+    //    {
+    //     type:'舞蹈',
+    //     title:'舞动福大',
+    //     order:5
+    //    },
+    //    {
+    //     type:'小品',
+    //     title:'学习',
+    //     order:3
+    //    },
+    //    {
+    //     type:'诗朗诵',
+    //     title:'相聚校庆',
+    //     order:4
+    //    },
+    //    {
+    //     type:'诗朗诵',
+    //     title:'相聚校庆',
+    //     order:2
+    //    }
       ],
       modalType: 0, // 0表示新增的弹窗， 1表示编辑
       total: 0, //当前的总条数
-      pageData: {
-          page: 1,
-          limit: 10
-      },
+      pageSize:8,
+      pageNo:1,
       acForm: {
           name: ''
       }
     }
   },
     methods: {
-        // 提交用户表单
-        addac(data){
-          console.log(data)
-          const findres=this.tableData.find((x)=>x.num==this.tableData.num)
-          if(!findres) this.tableData.push(data)
-          else{
-            this.$message({
-                        type: 'info',
-                        message: '添加失败'
-                    })
-          }
-        },
-        editac(data){
-
-        },
-        delac(val){
-
-        },
         submit() {
             console.log(this.form)
             this.$refs.form.validate((valid) => {
@@ -160,21 +150,36 @@ export default {
                 if (valid) {
                     // 后续对表单数据的处理
                     if (this.modalType === 0) {
-                        console.log(this.form)
-                        this.addac(this.form)
+                        
+                        http({
+                            method:'post',
+                            url:addac,
+                            data:{
+                                name:this.form.name,
+                                priority:this.form.priority,
+                                type:this.form.type
+                            }
+                        }).then(()=>{
+                            this.getList()
+                        })
                             // 重新获取列表的接口
-                        // this.getList()
+                        
                        
                     } else {
-                       this.delac(this.form)
-                        // editac(this.form).then(() => {
-                        //     // 重新获取列表的接口
-                        //     this.getList()
-                        // })
+                       editac(this.form).then(() => {
+                        // 重新获取列表的接口
+                        this.getList()
+                      })
+                      
                     }
 
                     // 清空表单的数据
-                    this.$refs.form.resetFields()
+                    this.form={
+                        id:'',
+                        type:'',
+                        name:'',
+                        priority:0
+                    },
                     // 关闭弹窗
                     this.dialogVisible = false
                 }
@@ -182,7 +187,12 @@ export default {
         },
         // 弹窗关闭的时候
         handleClose() {
-            this.$refs.form.resetFields()
+            this.form={
+                        id:'',
+                        type:'',
+                        name:'',
+                        priority:0
+                    },
             this.dialogVisible = false
         },
         cancel() {
@@ -200,13 +210,20 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
                 }).then(() => {
-                    this.delac(row.num)
-                    
+              delac( row.id ).then(() => {
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+                // 重新获取列表的接口
+                this.getList()
+              })
+
                 }).catch(() => {
                     this.$message({
                         type: 'info',
                         message: '已取消删除'
-                    });          
+                    });
             });
         },
         handleAdd() {
@@ -215,29 +232,56 @@ export default {
         },
         // 获取列表的数据
         getList() {
-            // 获取的列表的数据
-            
-            this.total=tableData.length()||0
-            // getac({params: {...this.acForm, ...this.pageData}}).then(({ data }) => {
-            //     console.log(data)
-            //     this.tableData = data.list
-
-            //     this.total = data.count || 0
-            // })
+            http({
+                method:'post',
+                url:getProgram,
+                data:{
+                    pageNo: this.pageNo,
+                    pageSize: this.pageSize,
+                }
+            }).then(res=>{
+                console.log('getprogram',res.data)
+                this.tableData=res.data.dataList
+                this.total = res.data.total;
+            }).catch(() => {
+                this.$message({
+                    type: 'error',
+                    message: '服务器错误！'
+                });
+                })
         },
     
         
         // 选择页码的回调函数
         handlePage(val) {
             // console.log(val, 'val')
-            this.pageData.page = val
+            this.pageNo = val
             this.getList()
         },
         // 列表的查询
         onSubmit() {
-            this.getList()
+            http({
+                method:'post',
+                url:findac,
+                data:{
+                    name:this.acForm.name,
+                    pageNo: 1,
+                    pageSize:100
+                }
+            }).then(res=>{
+                console.log('finduser',res.data)
+                this.tableData=res.data.dataList
+            }).catch(() => {
+                this.$message({
+                    type: 'error',
+                    message: '服务器错误！'
+                });
+                })
         }
     },
+    mounted () {
+        this.getList()
+    }
 }
 </script>
 <style lang="less" scoped>

@@ -6,18 +6,18 @@
             width="50%"
             :before-close="handleClose">
             <!-- 用户的表单信息 -->
-            <el-form ref="form" :rules="rules" :inline="true" :model="form" label-width="80px">
+            <el-form ref="form"  :inline="true" :model="form" label-width="80px">
                 <el-form-item label="荣誉类别" prop="type">
-                    <el-input placeholder="请输入校友类别" v-model="form.type"></el-input>
+                    <el-input placeholder="请输入荣誉类别" v-model="form.type" readonly></el-input>
                 </el-form-item>
-                <el-form-item label="荣誉奖项" prop="awards">
-                    <el-input placeholder="请输入荣誉奖项" v-model="form.awards"></el-input>
+                <el-form-item label="荣誉奖项" prop="title">
+                    <el-input placeholder="请输入荣誉奖项" v-model="form.title"></el-input>
                 </el-form-item>
                 <el-form-item label="荣誉名次" prop="rank">
                     <el-input placeholder="请输入荣誉名次" v-model="form.rank"></el-input>
                 </el-form-item>
-                <el-form-item label="荣誉详情" prop="introduce">
-                    <el-input placeholder="请输入荣誉详情" v-model="form.introduce"></el-input>
+                <el-form-item label="荣誉介绍" prop="description">
+                    <el-input placeholder="请输入荣誉介绍" v-model="form.description"></el-input>
                 </el-form-item>
             </el-form>
 
@@ -31,17 +31,17 @@
                 + 新增
             </el-button>
             <!-- form搜索区域 -->
-            <el-form :inline="true" :model="awardsForm">
+            <!-- <el-form :inline="true" :model="awardsForm">
                 <el-form-item>
                     <el-input placeholder="请输入荣誉奖项" v-model="awardsForm.name"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">查询</el-button>
                 </el-form-item>
-            </el-form>
+            </el-form> -->
         </div>
         <span class="title">学院风采列表</span>
-        <div class="table">
+        <div class="table" >
             <div class="content" v-for="item in tableData" :key="item.name">
               <div class="table-header">
                   <div class="header-left">
@@ -55,104 +55,89 @@
                         <span>{{item.type}}</span>
                     </div>
                     <div class="information">
-                      <span class="awards">{{item.awards}}</span>
-                      <span class="introduce">{{item.introduce}}</span>
+                      <span class="awards">{{item.title}}</span>
+                      <span class="introduce">{{item.description}}</span>
                     </div>
                     <div class="rank"> 
                       <span>
-                         {{item.rank}}
+                           {{item.rank}}
                       </span>
                     </div>      
                   
                   <!-- <div class="divider"></div> -->
               </div>
         </div>
-        <div class="pager">
+        <!-- <div class="pager">
                 <el-pagination
                     layout="prev, pager, next"
                     :total="total"
                     @current-change="handlePage">
                 </el-pagination>
-            </div>
+            </div> -->
     </div>
   </div>
 </template>
 <script>
+import http from '../../utils/requset'
+import {getachievement,editachievement,delachievement,addachievement} from '../../api/index'
 export default {
   name: 'huodong',
   data () {
     return {
       dialogVisible: false,
       form:{
-        type:'',
-        awards:'',
+        type:'科研成果',
+        title:'',
         rank:'',
-        introduce:'',
+        description:'',
       }, 
-      rules: {
-          type: [
-              { required: true, message: '请输入荣誉类别' }
-          ],
-          awards: [
-              { required: true, message: '请输入荣誉奖项' }
-          ],
-          rank: [
-              { required: true, message: '请输入荣誉名次' }
-          ],
-          introduce: [
-              { required: true, message: '请输入荣誉详情' }
-          ],
-      },
+      // rules: {
+      //     type: [
+      //         { required: true, message: '请输入荣誉类别' }
+      //     ],
+      //     awards: [
+      //         { required: true, message: '请输入荣誉奖项' }
+      //     ],
+      //     rank: [
+      //         { required: true, message: '请输入荣誉名次' }
+      //     ],
+      //     introduce: [
+      //         { required: true, message: '请输入荣誉介绍' }
+      //     ],
+      // },
        tableData:[
-              {
-                type:'科研成果',
-                awards:'2020年度省科技进步奖',
-                rank:'一等奖',
-                introduce:'智能化集成化的机器学习云平台',
-              },
-              {
-                type:'科研成果',
-                awards:'2020年度省科技进步奖',
-                rank:'一等奖',
-                introduce:'智能化集成化的机器学习云平台',
-              },
-              {
-                type:'科研成果',
-                awards:'2020年度省科技进步奖',
-                rank:'一等奖',
-                introduce:'智能化集成化的机器学习云平台',
-              }
+              // {
+              //   type:'科研成果',
+              //   awards:'2020年度省科技进步奖',
+              //   rank:'一等奖',
+              //   introduce:'智能化集成化的机器学习云平台',
+              // },
+              // {
+              //   type:'科研成果',
+              //   awards:'2020年度省科技进步奖',
+              //   rank:'一等奖',
+              //   introduce:'智能化集成化的机器学习云平台',
+              // },
+              // {
+              //   type:'科研成果',
+              //   awards:'2020年度省科技进步奖',
+              //   rank:'一等奖',
+              //   introduce:'智能化集成化的机器学习云平台',
+              // }
       ],
       modalType: 0, // 0表示新增的弹窗， 1表示编辑
       total: 0, //当前的总条数
-      pageData: {
-          page: 1,
-          limit: 10
-      },
+      pageNo:1,
+      pageSize:20,
       awardsForm: {
           name: ''
       }
     }
   },
+  mounted(){
+    this.getList()
+  },
     methods: {
-        // 提交用户表单
-        addawards(data){
-          console.log(data)
-          const findres=this.tableData.find((x)=>x.num==this.tableData.num)
-          if(!findres) this.tableData.push(data)
-          else{
-            this.$message({
-                        type: 'info',
-                        message: '添加失败'
-                    })
-          }
-        },
-        editawards(data){
-
-        },
-        delawards(val){
-
-        },
         submit() {
             this.$refs.form.validate((valid) => {
                 // console.log(valid, 'valid')
@@ -160,20 +145,26 @@ export default {
                     // 后续对表单数据的处理
                     if (this.modalType === 0) {
                         console.log(this.form)
-                        this.addawards(this.form)
-                            // 重新获取列表的接口
-                        // this.getList()
+                       addachievement(this.form).then(()=>{
+                        console.log(11111)
+                        this.getList()
+                       })
                        
-                    } else {
-                       this.delawards(this.form)
-                        // editawards(this.form).then(() => {
-                        //     // 重新获取列表的接口
-                        //     this.getList()
-                        // })
+                    } else if(this.modalType === 1){
+                        editachievement(this.form).then(() => {
+                            // 重新获取列表的接口
+                            this.getList()
+                            
+                        })
                     }
 
                     // 清空表单的数据
-                    this.$refs.form.resetFields()
+                    this.form={
+                      type:'',
+                      title:'',
+                      rank:'',
+                      description:'',
+                    }
                     // 关闭弹窗
                     this.dialogVisible = false
                 }
@@ -181,7 +172,12 @@ export default {
         },
         // 弹窗关闭的时候
         handleClose() {
-            this.$refs.form.resetFields()
+            this.form={
+                    type:'',
+                    title:'',
+                    rank:'',
+                    description:'',
+                  }
             this.dialogVisible = false
         },
         cancel() {
@@ -193,13 +189,15 @@ export default {
             // 注意需要对当前行数据进行深拷贝，否则会出错
             this.form = JSON.parse(JSON.stringify(row))
         },
-        handleDelete(row) {
+        handleDelete(item) {
             this.$confirm('是否确认删除?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
                 }).then(() => {
-                    this.delawards(row.num)
+                    delachievement(item.id).then(()=>{
+                      this.getList()
+                    })
                     
                 }).catch(() => {
                     this.$message({
@@ -216,13 +214,25 @@ export default {
         getList() {
             // 获取的列表的数据
             
-            this.total=tableData.length()||0
-            // getawards({params: {...this.awardsForm, ...this.pageData}}).then(({ data }) => {
-            //     console.log(data)
-            //     this.tableData = data.list
-
-            //     this.total = data.count || 0
-            // })
+            // this.total=tableData.length()||0
+            http({
+                method:'post',
+                url:getachievement,
+                data:{
+                    pageNo: this.pageNo,
+                    pageSize: this.pageSize,
+                    "type":"科研成果"
+                }
+            }).then(res=>{
+                console.log('getachievement',res.data)
+                this.tableData=res.data.dataList
+                this.total = res.data.total;
+            }).catch(() => {
+                this.$message({
+                    type: 'error',
+                    message: '服务器错误！'
+                });
+                })
         },
     
         
@@ -246,6 +256,7 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-bottom: 10px;
     }
      .title{
       font-size: 25px;
@@ -254,11 +265,14 @@ export default {
     }
     .table{
       position: relative;
-      margin-top:20px ;
+      margin-top:10px ;
+      overflow: scroll;
       height: calc(100% - 62px);
       background: white;
       .content{
-        margin-top:25px ;
+        margin-top:15px ;
+        // overflow: scroll;
+        border-radius: 10px;
         box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.2);
         .table-header{
             .header-left{
@@ -316,11 +330,11 @@ export default {
         }
        
       }
-       .pager {
-            position: absolute;
-            // bottom: 0px;
-            right: 20px;
-        }
+      //  .pager {
+      //       position: absolute;
+      //       // bottom: 0px;
+      //       right: 20px;
+      //   }
     }
 }
 </style>

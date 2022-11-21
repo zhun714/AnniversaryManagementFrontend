@@ -6,20 +6,18 @@
             width="30%"
             :before-close="handleClose">
             <!-- 用户的表单信息 -->
-            <el-form ref="form" :rules="rules" :inline="true" :model="form" label-width="80px">
-                <el-form-item label="背景名称" prop="name">
+            <el-form ref="form"  :inline="true" :model="form" label-width="80px">
+                <el-form-item label="背景名称" >
                     <el-input placeholder="请输入背景名称" v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="背景图片" prop="ImageUrl">
-                    <el-upload
-                      class="upload-demo"
-                      drag
-                      action="https://jsonplaceholder.typicode.com/posts/"
-                      multiple>
-                      <i class="el-icon-upload"></i>
-                      <div class="el-upload__span">将文件拖到此处，或<em>点击上传</em></div>
-                      <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过2MB</div>
-                    </el-upload>
+                <!-- <form action="" encrypted="multipart/form-date" id="uploadfile">
+                    <label for="pic" class="flota-left">请上传图片：</label>
+                    <input type="file" id="pic" ref="pic" name="upload" onChange="uploadpic(event)" hidden>
+                    <img src="" alt="" @click="getpic" ref="picture" width="100px" height="100px">
+                </form> -->
+                <el-form-item label="上传背景图:" >
+                           
+                            <input type="file" ref="fileId"  @change="getFile">
                 </el-form-item>
             </el-form>
 
@@ -56,7 +54,7 @@
                 <div class="photo">
                     <img
                      style="width: 100%;height: 190px; border-radius: 5px;"
-                    :src="item.ImageUrl"
+                    :src="item.photo"
                     />
                 </div>
                  <div class="title">
@@ -68,103 +66,96 @@
   </div>  
 </template>
 <script>
+import http from '../../utils/requset'
+import {delbackground, getbackground,addbackground,editbackground} from '../../api/index'
 export default {
   name: 'huodong',
   data () {
     return {
       dialogVisible: false,
       form:{
+        id:'',
         name:'',
-        ImageUrl: ''
-        
-      }, 
-      rules: {
-          name: [
-              { required: true, message: '请输入背景名称' }
-          ]
+        photo: '',
+        phFile:''
       },
+      fileList:[],
+    //   rules: {
+    //       name: [
+    //           { required: true, message: '请输入背景名称' }
+    //       ]
+    //   },
        tableData:[
-          {
-          name:'东门',
-          ImageUrl: 'https://ts1.cn.mm.bing.net/th/id/R-C.dc08fe825b8bd2bf2871f5fffab08380?rik=rubO22eJyjaX1g&riu=http%3a%2f%2fp8.qhimg.com%2ft0184a2d603ef1708df.jpg&ehk=OmbXhn8hlAY6yILKMQwRPeBKqbJagfdu2q96zy23rc4%3d&risl=&pid=ImgRaw&r=0'
-          
-        },
-         {
-          name:'东门',
-          ImageUrl: 'https://ts1.cn.mm.bing.net/th/id/R-C.dc08fe825b8bd2bf2871f5fffab08380?rik=rubO22eJyjaX1g&riu=http%3a%2f%2fp8.qhimg.com%2ft0184a2d603ef1708df.jpg&ehk=OmbXhn8hlAY6yILKMQwRPeBKqbJagfdu2q96zy23rc4%3d&risl=&pid=ImgRaw&r=0'
-          
-        },
-          {
-          name:'东门',
-          ImageUrl: 'https://ts1.cn.mm.bing.net/th/id/R-C.dc08fe825b8bd2bf2871f5fffab08380?rik=rubO22eJyjaX1g&riu=http%3a%2f%2fp8.qhimg.com%2ft0184a2d603ef1708df.jpg&ehk=OmbXhn8hlAY6yILKMQwRPeBKqbJagfdu2q96zy23rc4%3d&risl=&pid=ImgRaw&r=0'
-          
-        },
-          {
-          name:'东门',
-          ImageUrl: 'https://ts1.cn.mm.bing.net/th/id/R-C.dc08fe825b8bd2bf2871f5fffab08380?rik=rubO22eJyjaX1g&riu=http%3a%2f%2fp8.qhimg.com%2ft0184a2d603ef1708df.jpg&ehk=OmbXhn8hlAY6yILKMQwRPeBKqbJagfdu2q96zy23rc4%3d&risl=&pid=ImgRaw&r=0'
-          
-        },
-         {
-          name:'东门',
-          ImageUrl: 'https://ts1.cn.mm.bing.net/th/id/R-C.dc08fe825b8bd2bf2871f5fffab08380?rik=rubO22eJyjaX1g&riu=http%3a%2f%2fp8.qhimg.com%2ft0184a2d603ef1708df.jpg&ehk=OmbXhn8hlAY6yILKMQwRPeBKqbJagfdu2q96zy23rc4%3d&risl=&pid=ImgRaw&r=0'
-          
-        },
-         {
-          name:'东门',
-          ImageUrl: 'https://ts1.cn.mm.bing.net/th/id/R-C.dc08fe825b8bd2bf2871f5fffab08380?rik=rubO22eJyjaX1g&riu=http%3a%2f%2fp8.qhimg.com%2ft0184a2d603ef1708df.jpg&ehk=OmbXhn8hlAY6yILKMQwRPeBKqbJagfdu2q96zy23rc4%3d&risl=&pid=ImgRaw&r=0'
-          
-        },
-         {
-          name:'东门',
-          ImageUrl: 'https://ts1.cn.mm.bing.net/th/id/R-C.dc08fe825b8bd2bf2871f5fffab08380?rik=rubO22eJyjaX1g&riu=http%3a%2f%2fp8.qhimg.com%2ft0184a2d603ef1708df.jpg&ehk=OmbXhn8hlAY6yILKMQwRPeBKqbJagfdu2q96zy23rc4%3d&risl=&pid=ImgRaw&r=0'
-          
-        },
-        
         
       ],
       modalType: 0, // 0表示新增的弹窗， 1表示编辑
       total: 0, //当前的总条数
-      pageData: {
-          page: 1,
-          limit: 10
-      },
+      pageNo:1,
+      pageSize:10,
       bkForm: {
           name: ''
-      }
+      },
+     
+
     }
   },
     methods: {
-        // 提交用户表单
-        addbk(data){
-          console.log(data)
-          const findres=this.tableData.find((x)=>x.num==this.tableData.num)
-          if(!findres) this.tableData.push(data)
-          else{
-            this.$message({
-                        type: 'info',
-                        message: '添加失败'
-                    })
-          }
-        },
-        editbk(data){
+      getFile(){
+        let files = this.$refs.fileId.files[0];
+     this.form.phFile= files;
+     console.log(files)
+      },
 
-        },
-        delbk(val){
-
-        },
         submit() {
-            this.$refs.form.validate((valid) => {
-                // console.log(valid, 'valid')
+            let that = this;
+                console.log('11213',this.modalType)
+                if (that.form.phFile == "") {
+                    that.$message.error('请先添加文件');
+                    return;
+                }
+                let formData = new window.FormData(); 
+                // console.log(that.form.phFile)
+                formData.append("photo", that.form.phFile);
+                // console.log('1231',postdata)
+                this.$refs.form.validate((valid) => {
                 if (valid) {
                     // 后续对表单数据的处理
+                    console.log(this.fileList)
+                   
                     if (this.modalType === 0) {
-                        console.log(this.form)
-                        this.addbk(this.form)
-                            // 重新获取列表的接口
-                        // this.getList()
-                       
+                       http({
+                        method:'post',
+                        url:addbackground,
+                        headers:{
+                            "Content-Type":"multipart/form-date"
+                        },
+                        // processDate:false,
+                        data:formData,
+                        params:{
+                            name:this.form.name,
+                            
+                        }
+                       }).then(()=>{
+
+                            this.getList()
+                        })
                     } else {
-                       this.delbk(this.form)
+                       http({
+                        method:'post',
+                        url:editbackground,
+                        headers:{
+                            "Content-Type":"multipart/form-date"
+                        },
+                        data:formData,
+                        params:{
+                            id:this.form.id,
+                            name:this.form.name,
+                            
+                        }
+                       }).then(()=>{
+
+                            this.getList()
+                            })
                         // editbk(this.form).then(() => {
                         //     // 重新获取列表的接口
                         //     this.getList()
@@ -193,12 +184,20 @@ export default {
             this.form = JSON.parse(JSON.stringify(row))
         },
         handleDelete(row) {
+          console.log(row)
             this.$confirm('是否确认删除?', '提示', {
                 confirmButtonspan: '确定',
                 cancelButtonspan: '取消',
                 type: 'warning'
                 }).then(() => {
-                    this.delbk(row.num)
+                    delbackground(row.id).then(()=>{
+                      this.$message({
+                      type: 'success',
+                      message: '删除成功!'
+                    });
+                    // 重新获取列表的接口
+                    this.getList()
+                    })
                     
                 }).catch(() => {
                     this.$message({
@@ -215,28 +214,40 @@ export default {
         getList() {
             // 获取的列表的数据
             
-            this.total=tableData.length()||2
-            
-            // getbk({params: {...this.bkForm, ...this.pageData}}).then(({ data }) => {
-            //     console.log(data)
-            //     this.tableData = data.list
-
-            //     this.total = data.count || 0
-            // })
+            http({
+                method:'post',
+                url:getbackground,
+                data:{
+                    pageNo: this.pageNo,
+                    pageSize: this.pageSize,
+                }
+            }).then(res=>{
+                console.log('getbk',res.data)
+                this.tableData=res.data.dataList
+                this.total = res.data.total;
+            }).catch(() => {
+                this.$message({
+                    type: 'error',
+                    message: '服务器错误！'
+                });
+                })
         },
     
         
         // 选择页码的回调函数
-        handlePage(val) {
-            // console.log(val, 'val')
-            this.pageData.page = val
-            this.getList()
-        },
+        // handlePage(val) {
+        //     // console.log(val, 'val')
+        //     this.pageData.page = val
+        //     this.getList()
+        // },
         // 列表的查询
         onSubmit() {
             this.getList()
         }
     },
+    mounted () {
+        this.getList()
+    }
 }
 </script>
 <style lang="less" scoped>
@@ -256,7 +267,7 @@ export default {
     .table{
       overflow: scroll;
       display: flex;
-      justify-content: space-between;
+      justify-content: space-evenly;
       flex-wrap: wrap;
       position: relative;
       margin-top:20px ;
