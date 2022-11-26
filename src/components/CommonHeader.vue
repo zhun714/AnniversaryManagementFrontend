@@ -15,7 +15,7 @@
                 <img class="user" src="../assets/avater.png" >
             </span>
             <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>个人中心</el-dropdown-item>
+                <el-dropdown-item @click.native="changetoshouye">管理中心</el-dropdown-item>
                 <el-dropdown-item @click.native="logout">退出</el-dropdown-item>
             </el-dropdown-menu>
 
@@ -33,6 +33,11 @@ export default {
     }
   },
   methods: {
+    changetoshouye(){
+      this.$router.push({
+        name: "home"
+      })
+    },
     handleMenu () {
       this.$store.commit('CollapseMenu')
     },

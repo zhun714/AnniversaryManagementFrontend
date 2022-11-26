@@ -31,14 +31,14 @@
                 + 新增
             </el-button>
             <!-- form搜索区域 -->
-            <el-form :inline="true" :model="acForm">
+            <!-- <el-form :inline="true" :model="acForm">
                 <el-form-item>
                     <el-input placeholder="请输入名称" v-model="acForm.name"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">查询</el-button>
                 </el-form-item>
-            </el-form>
+            </el-form> -->
         </div>
         <div class="common-tabel">
             <el-table
@@ -288,6 +288,7 @@ export default {
 .manage {
     height: 90%;
     .manage-header {
+        margin-bottom: 10px;
         display: flex;
         justify-content: space-between;
         align-items: center;

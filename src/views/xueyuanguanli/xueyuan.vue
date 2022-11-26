@@ -17,7 +17,7 @@
                     <el-input placeholder="请输入荣誉名次" v-model="form.rank"></el-input>
                 </el-form-item>
                 <el-form-item label="荣誉介绍" prop="description">
-                    <el-input placeholder="请输入荣誉介绍" v-model="form.description"></el-input>
+                    <el-input placeholder="请输入荣誉介绍" v-model="form.description"  type="textarea" autosize></el-input>
                 </el-form-item>
             </el-form>
 
@@ -307,6 +307,7 @@ export default {
               flex-direction: column;
               align-items: center;
               justify-content:center;
+              width:400px;
               .awards{
                 margin-bottom:5px ;
                 color: #7b7b7b;

@@ -17,7 +17,7 @@
                     <el-input placeholder="请输入校友职业" v-model="form.position"></el-input>
                 </el-form-item>
                 <el-form-item label="校友简介" prop="brief">
-                    <el-input placeholder="请输入校友简介" v-model="form.brief"></el-input>
+                    <el-input placeholder="请输入校友简介" v-model="form.brief"  type="textarea" autosize></el-input>
                 </el-form-item>
                 <el-form-item label="校友头像:" >
                   <input type="file" ref="fileId"  @change="getFile">
@@ -34,14 +34,14 @@
                 + 新增
             </el-button>
             <!-- form搜索区域 -->
-            <el-form :inline="true" :model="xyForm">
+            <!-- <el-form :inline="true" :model="xyForm">
                 <el-form-item>
                     <el-input placeholder="请输入校友姓名" v-model="xyForm.name"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">查询</el-button>
                 </el-form-item>
-            </el-form>
+            </el-form> -->
         </div>
         <span class="title">知名校友列表</span>
         <div class="table" style="overflow:auto;padding-bottom: 20px;"> 
@@ -54,7 +54,7 @@
                 </div>
             </div>
             <div class="table-content">
-                  <div class="photo">
+                  <div class="photo" >
                     <img
                        style="width: 180px;height: 200px;border-radius: 5px;"
                       :src="item.photo"
@@ -194,7 +194,14 @@ export default {
                     }
 
                     // 清空表单的数据
-                    this.$refs.form.resetFields()
+                    this.form={
+                        id:'',
+                        name:'',
+                        brief:'',
+                        photo:'',
+                        position:'',
+                        phFile:''
+                      }
                     // 关闭弹窗
                     this.dialogVisible = false
                 }
@@ -202,7 +209,14 @@ export default {
         },
         // 弹窗关闭的时候
         handleClose() {
-            this.$refs.form.resetFields()
+            this.form={
+              id:'',
+              name:'',
+              brief:'',
+              photo:'',
+              position:'',
+              phFile:''
+            }
             this.dialogVisible = false
         },
         cancel() {
@@ -286,6 +300,7 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-bottom: 10px;
     }
     .title{
       font-size: 25px;
@@ -326,6 +341,7 @@ export default {
               flex-direction: column;
               align-items: center;
               justify-content:center;
+              width:160px;
               .work{
                 font-size: 20px;
                 font-weight: 550;

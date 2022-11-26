@@ -15,7 +15,7 @@
                     <input type="file" id="pic" ref="pic" name="upload" onChange="uploadpic(event)" hidden>
                     <img src="" alt="" @click="getpic" ref="picture" width="100px" height="100px">
                 </form> -->
-                <el-form-item label="上传背景图:" >
+                <el-form-item label="上传背景:" >
                            
                             <input type="file" ref="fileId"  @change="getFile">
                 </el-form-item>
@@ -26,21 +26,21 @@
                 <el-button type="primary" @click="submit">确 定</el-button>
             </span>
         </el-dialog>
-        <div class="manage-header">
+        <div class="manage-header" >
             <el-button @click="handleAdd" type="primary">
                 + 新增
             </el-button>
             <!-- form搜索区域 -->
-            <el-form :inline="true" :model="bkForm">
+            <!-- <el-form :inline="true" :model="bkForm">
                 <el-form-item>
                     <el-input placeholder="请输入背景名称" v-model="bkForm.name"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">查询</el-button>
                 </el-form-item>
-            </el-form>
+            </el-form> -->
         </div>
-        <span class="title">虚拟背景列表</span>
+        <span class="title" style="">虚拟背景列表</span>
         <div class="table"> 
           <div class="content" v-for="item in tableData" :key="item.name">
             <div class="table-header">
@@ -163,7 +163,12 @@ export default {
                     }
 
                     // 清空表单的数据
-                    this.$refs.form.resetFields()
+                    this.form={
+                            id:'',
+                            name:'',
+                            photo: '',
+                            phFile:''
+                    }
                     // 关闭弹窗
                     this.dialogVisible = false
                 }
@@ -171,7 +176,12 @@ export default {
         },
         // 弹窗关闭的时候
         handleClose() {
-            this.$refs.form.resetFields()
+            this.form={
+                            id:'',
+                            name:'',
+                            photo: '',
+                            phFile:''
+                    }
             this.dialogVisible = false
         },
         cancel() {
@@ -258,6 +268,7 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-bottom: 10px;
     }
     .title{
       font-size: 25px;

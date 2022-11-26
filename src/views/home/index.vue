@@ -15,11 +15,11 @@
       <div class="flex-row justify-between">
         <div class="flex-row space-x-240">
           <span class="font_5">3254</span>
-          <span class="font_5">634</span>
+          <span class="font_5">{{this.dataList[0]}}</span>
         </div>
         <div class="flex-row space-x-260 group_10">
-          <span class="font_5">35</span>
-          <span class="font_5">8</span>
+          <span class="font_5">{{this.dataList[1]}}</span>
+          <span class="font_5">{{this.dataList[2]}}</span>
         </div>
       </div>
       <div class="flex-row justify-between group_11">
@@ -33,57 +33,69 @@
   <div class="flex-col space-y-27 section_4">
     <div class="flex-row space-x-40">
       <div class="flex-row justify-between group_12">
-        <div class="flex-col items-center img-wrapper">
+        <div style="display:flex;flex-direction:column;">
+          <div class="flex-col items-center img-wrapper"  @click="changetoxueyuan">
           <img
             class="img_15"
             src="https://codefun-proj-user-res-1256085488.cos.ap-guangzhou.myqcloud.com/6353f1ea5a7e3f0310e61ff3/6353f319fe65f70012e4f328/16674899797721454888.png"
-            @click="changetoxueyuan"
+           
           />
+          </div>
+          <span style="margin-top:20px;font-size: 20px;">学院风采</span>
         </div>
-        <div class="flex-col items-center img-wrapper_2">
+        <div style="display:flex;flex-direction:column;">
+          <div class="flex-col items-center img-wrapper_2" @click="changetohuodong">
           <img
             class="img_16"
             src="https://codefun-proj-user-res-1256085488.cos.ap-guangzhou.myqcloud.com/6353f1ea5a7e3f0310e61ff3/6353f319fe65f70012e4f328/16674899797767166472.png"
-            @click="changetohuodong"
+            
           />
         </div>
-        <div class="flex-col items-center img-wrapper_3">
+        <span style="margin-top:20px;font-size: 20px;">活动管理</span>
+        </div>
+        <div>
+          <div class="flex-col items-center img-wrapper_3" @click="changetouser" style="margin-bottom:20px;">
           <img
             class="img_19"
-            @click="changetouser"
+            
             src="https://codefun-proj-user-res-1256085488.cos.ap-guangzhou.myqcloud.com/6353f1ea5a7e3f0310e61ff3/6353f319fe65f70012e4f328/16674899797779357538.png"
           />
         </div>
-        <div class="flex-col items-center img-wrapper_4">
+        <span style="margin-top:20px;font-size: 20px;">校友管理</span>
+        </div>
+        <div >
+          <div class="flex-col items-center img-wrapper_4" @click="changetozhufu" style="margin-bottom:20px;">
           <img
             class="img_20"
-            @click="changetozhufu"
+            
             src="https://codefun-proj-user-res-1256085488.cos.ap-guangzhou.myqcloud.com/6353f1ea5a7e3f0310e61ff3/6353f319fe65f70012e4f328/16674899797797868328.png"
           />
         </div>
-        <div class="flex-col items-center img-wrapper_5">
+        <span style="margin-top:20px;font-size: 20px;">祝福审核</span>
+        </div>
+        <div>
+          <div class="flex-col items-center img-wrapper_5" @click="changetobk" style="margin-bottom:20px;">
           <img
             class="img_17"
-            @click="changetobk"
+            
             src="https://codefun-proj-user-res-1256085488.cos.ap-guangzhou.myqcloud.com/6353f1ea5a7e3f0310e61ff3/6353f319fe65f70012e4f328/16674899797802287687.png"
           />
         </div>
+        <span style="margin-top:20px;font-size: 20px;">虚拟背景管理</span>
+        </div>
+        
       </div>
-      <div class="flex-col items-center img-wrapper_6">
+      <div>
+        <div class="flex-col items-center img-wrapper_6" @click="changetoxy" style="margin-bottom:20px;">
         <img
           class="img_18"
-          @click="changetoxy"
+          
           src="https://codefun-proj-user-res-1256085488.cos.ap-guangzhou.myqcloud.com/6353f1ea5a7e3f0310e61ff3/6353f319fe65f70012e4f328/16674899797814654839.png"
         />
+       </div>
+       <span style="margin-top:20px;font-size: 20px;">校友风采</span>
       </div>
-    </div>
-    <div style="display:flex;justify-content:space-between">
-      <span class="font_6">学院风采</span>
-      <span class="font_6" style="margin-left:50px">活动管理</span>
-      <span class="font_6" style="margin-left:45px">校友管理</span>
-      <span class="font_6" style="margin-left:30px">祝福审核</span>
-      <span class="font_6" style="margin-left:30px" >虚拟背景管理</span>
-      <span class="font_6" style="margin-right:10px">校友风采</span>
+     
     </div>
   </div>
   <!-- <div class="flex-row space-x-9 group_16">
@@ -182,9 +194,32 @@
 </template>
 <script>
 // import * as echarts from 'echarts'
+import http from '../../utils/requset'
 export default {
   name: 'Home',
+  data(){
+    return{
+      dataList:[]
+    }
+  },
+  mounted () {
+        this.getList()
+    },
   methods:{
+    getList() {
+            http({
+                method:'get',
+                url:'/user/selectCount',
+            }).then(res=>{
+                console.log('shouye',res.data)
+                this.dataList=res.data.data
+            }).catch(() => {
+                this.$message({
+                    type: 'error',
+                    message: '服务器错误！'
+                });
+                })
+        },
     changetoxueyuan(){
       this.$router.push({
         name: "page1"
